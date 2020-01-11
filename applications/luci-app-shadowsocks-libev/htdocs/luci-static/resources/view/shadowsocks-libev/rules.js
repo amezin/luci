@@ -13,6 +13,11 @@ function src_dst_option(s /*, ... */) {
 	o.datatype = 'or(ipaddr,cidr)';
 }
 
+function domain_list_option(s /*, ... */) {
+	var o = s.taboption.apply(s, L.varargs(arguments, 1));
+	o.datatype = 'hostname';
+}
+
 return view.extend({
 	load: function() {
 		return Promise.all([
@@ -89,6 +94,13 @@ return view.extend({
 		src_dst_option(s, 'dst', form.DynamicList, 'dst_ips_forward',
 			_('Dst ip/net forward'),
 			_('Forward through ss-redir for packets with dst address in this list'));
+
+		domain_list_option(s, 'dst', form.DynamicList, 'dst_domains_bypass',
+			_('Dst domains bypass'),
+			_('Bypass ss-redir for packets with dst address matching DNS domain in this list'));
+		domain_list_option(s, 'dst', form.DynamicList, 'dst_domains_forward',
+			_('Dst domains forward'),
+			_('Forward through ss-redir for packets with dst address matching DNS domain in this list'));
 
 		var dir = '/etc/shadowsocks-libev';
 		o = s.taboption('dst', form.FileUpload, 'dst_ips_bypass_file',
